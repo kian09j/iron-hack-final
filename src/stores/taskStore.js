@@ -32,6 +32,9 @@ export const useTaskStore = defineStore("taskStore", () => {
       },
       isCompleted: true, // Boolean indicating if the task is completed
       userId: 1, // Link task to user with id 1
+      dueDate: '2024-07-10', // Example due date (YYYY-MM-DD format)
+      priority: "medium", // Example priority field
+
     },
     {
       id: 2, // Unique identifier for the task
@@ -43,6 +46,9 @@ export const useTaskStore = defineStore("taskStore", () => {
       },
       isCompleted: false, // Boolean indicating if the task is completed
       userId: 2, // Link task to user with id 2
+      dueDate: '2024-07-10', // Example due date (YYYY-MM-DD format)
+      priority: "medium", // Example priority field
+
     },
   ]);
 
@@ -82,6 +88,7 @@ export const useTaskStore = defineStore("taskStore", () => {
     }
   }
 
+ 
   /*
   The markTaskCompleted function is used to mark a specific task as completed.
   - It takes a taskId as a parameter.
@@ -106,6 +113,9 @@ export const useTaskStore = defineStore("taskStore", () => {
     }
   }
 
+  function getTasksByPriority(priority) {
+    return tasks.filter((task) => task.priority === priority);
+  }
   /*
   The deleteTask function is used to remove a specific task from the tasks array.
   - It takes a taskId as a parameter.
@@ -127,6 +137,22 @@ export const useTaskStore = defineStore("taskStore", () => {
     return tasks.filter((task) => task.userId === userId);
   }
 
+
+
+
+  function updateTask(updatedTask) {
+    const index = tasks.findIndex((task) => task.id === updatedTask.id);
+    if (index !== -1) {
+      // Update the task using Vue's set method or by creating a new object
+      tasks[index] = { ...tasks[index], ...updatedTask };
+      // Alternatively, you can use Vue's set method to update the task:
+      // Vue.set(tasks, index, { ...tasks[index], ...updatedTask });
+    }
+  }
+
+
+
+
   /*
   The getTasksByUserId function retrieves tasks that belong to a specific user.
   - It takes a userId as a parameter.
@@ -137,7 +163,7 @@ export const useTaskStore = defineStore("taskStore", () => {
   // ----------------------------------------------------------------------
   // Return statement to export all pieces of data or functions globally
   // ----------------------------------------------------------------------
-  return { tasks, addTask, markTaskCompleted, deleteTask, getTasksByUserId };
+  return { tasks, addTask, markTaskCompleted, deleteTask, getTasksByUserId, updateTask, getTasksByPriority };
 });
 
 /*

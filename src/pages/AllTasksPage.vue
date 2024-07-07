@@ -1,9 +1,3 @@
-<!--
-This file defines a Vue.js component for displaying and managing tasks in a to-do application.
-By building this component, we will achieve a user interface that shows a list of all tasks,
-allowing users to mark tasks as completed and delete them, leveraging global state management with Pinia.js.
--->
-
 <template>
   <h4>This Page Displays all tasks</h4>
 
@@ -29,6 +23,9 @@ allowing users to mark tasks as completed and delete them, leveraging global sta
         </ul>
         <!-- Display whether the task is completed or incomplete -->
         <h6>{{ task.isCompleted ? "Completed" : "Incomplete" }}</h6>
+        <h6>Due date: {{ task.dueDate }}</h6>
+        <p>Priority: {{ task.priority }}</p>
+
         <!-- Button to mark the task as completed -->
         <button
           v-bind:disabled="task.isCompleted ? true : false"
@@ -38,6 +35,10 @@ allowing users to mark tasks as completed and delete them, leveraging global sta
         </button>
         <!-- Button to delete the task -->
         <button @click="deleteTask(task.id)">Delete Task</button>
+        <!-- Button to edit the task -->
+        <router-link :to="{ name: 'EditTask', params: { taskId: task.id } }">
+          <button>Edit</button>
+        </router-link>
       </li>
     </ul>
   </div>
@@ -74,10 +75,3 @@ button {
   margin-bottom: 0.5rem;
 }
 </style>
-
-<!--
-Summary:
-This file implements a Vue.js component that displays a list of tasks from the global state managed by Pinia.js.
-It allows users to mark tasks as completed or delete them. The component leverages Pinia's state management to
-interact with the tasks and provide necessary functionalities.
--->

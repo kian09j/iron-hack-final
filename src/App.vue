@@ -1,14 +1,7 @@
-<!-- 
-This file defines a Vue.js component for the header of a to-do application.
-It manages user authentication states, displays navigation links conditionally based on the user's login status, and includes functionality to log out users.
--->
-
 <template>
   <header>
     <div class="wrapper">
-      <!-- Display a welcome message using the HelloWorld component -->
-      <HelloWorld msg="Final Boiler Plate" />
-
+      <HelloWorld msg="To Do List Application" />
       <!-- Navigation links -->
       <nav>
         <template v-if="!isLoggedIn">

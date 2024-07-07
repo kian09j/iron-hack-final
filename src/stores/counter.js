@@ -1,4 +1,4 @@
-// This file comes by defsult when you ccreate  a project using PINIA.js
+// This file comes by defsult when you create  a project using PINIA.js
 // Its an informational file that shows you how to structure a store in Pinia.
 
 // the defineStorew method allows for the creation of a store in pinia
@@ -9,7 +9,7 @@ import { defineStore } from "pinia";
 // Inside the method defineStore(), you pass two arguments.
 
 // 1st. arg === a string to just give a name for the store, pure referential
-// 2ndd. arg === an anoonymous arrow function expression
+// 2nd. arg === an anonymous arrow function expression
 // Syntax of arrow funcs:  () => {}
 
 export const useCounterStore = defineStore("counter", () => {
