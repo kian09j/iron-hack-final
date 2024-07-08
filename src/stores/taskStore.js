@@ -23,31 +23,35 @@ export const useTaskStore = defineStore("taskStore", () => {
   const tasks = reactive([
     {
       id: 1, // Unique identifier for the task
-      title: "Buy ingredients to make Tacos", // Title of the task
+      title: "Make a strawberry cake", // Title of the task
       description: {
         title:
-          "Go to the latin shop next to my house to buy groceries for this friday's dinner with friends", // Detailed description of the task
+          "Make the cake to enjoy with coffe after lunch", // Detailed description of the task
         timeToBeCompleted: "2 hours", // Estimated time to complete the task
-        extraInfoRequired: ["Guacamole", "Nachos"], // Additional information required for the task
+        extraInfoRequired: ["Strawberries", "Whipped Cream"], // Additional information required for the task
       },
       isCompleted: true, // Boolean indicating if the task is completed
       userId: 1, // Link task to user with id 1
-      dueDate: '2024-07-10', // Example due date (YYYY-MM-DD format)
+      dueDate: new Date('2024-07-10'),
       priority: "medium", // Example priority field
+      subtasks: [],
+
 
     },
     {
       id: 2, // Unique identifier for the task
-      title: "Clean out House", // Title of the task
+      title: "Unpack the luggage", // Title of the task
       description: {
-        title: "Clean House by friday for friends dinner", // Detailed description of the task
+        title: "Organize luggage after the travel", // Detailed description of the task
         timeToBeCompleted: "1 hour", // Estimated time to complete the task
-        extraInfoRequired: ["swap", "mop", "dust"], // Additional information required for the task
+        extraInfoRequired: ["unpack", "do laundry", "organize remaining items"], // Additional information required for the task
       },
       isCompleted: false, // Boolean indicating if the task is completed
       userId: 2, // Link task to user with id 2
-      dueDate: '2024-07-10', // Example due date (YYYY-MM-DD format)
+      dueDate: new Date('2024-07-10'),
       priority: "medium", // Example priority field
+      subtasks: [],
+
 
     },
   ]);
@@ -151,8 +155,21 @@ export const useTaskStore = defineStore("taskStore", () => {
   }
 
 
+  function addSubtask(taskId, subtask) {
+    let task = tasks.find((task) => task.id === taskId);
+    if (task) {
+      task.subtasks.push(subtask);
+    }
+  }
 
-
+  function markSubtaskCompleted(taskId, subtaskId) {
+    let task = tasks.find((task) => task.id === taskId);
+    if (task) {
+      let subtask = task.subtasks.find((subtask) => subtask.id === subtaskId);
+      if (subtask) {
+        subtask.isCompleted = true;
+      }
+    }}
   /*
   The getTasksByUserId function retrieves tasks that belong to a specific user.
   - It takes a userId as a parameter.
@@ -160,10 +177,8 @@ export const useTaskStore = defineStore("taskStore", () => {
   - This function allows for fetching tasks based on the user they are assigned to.
   */
 
-  // ----------------------------------------------------------------------
-  // Return statement to export all pieces of data or functions globally
-  // ----------------------------------------------------------------------
-  return { tasks, addTask, markTaskCompleted, deleteTask, getTasksByUserId, updateTask, getTasksByPriority };
+
+  return { tasks, addTask, markTaskCompleted, deleteTask, getTasksByUserId, updateTask, getTasksByPriority, addSubtask, markSubtaskCompleted };
 });
 
 /*

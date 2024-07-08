@@ -34,13 +34,17 @@
         </ul>
       </div>
       <div>
-        <label>Due Date</label>
-        <input v-model="task.dueDate" type="date" />
+        <label>Due Date:</label>
+        <input type="date" v-model="task.dueDate" required />
       </div>
-      <div>
-        <label>Priority</label>
-        <input v-model="task.priority" type="priority" />
-      </div>
+
+      <label>Priority:</label>
+      <select v-model="task.priority" required>
+        <option value="low">Low</option>
+        <option value="medium">Medium</option>
+        <option value="high">High</option>
+      </select>
+
       <div>
         <label for="isCompleted">Is Completed</label>
         <input id="isCompleted" v-model="task.isCompleted" type="checkbox" />

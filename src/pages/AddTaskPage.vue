@@ -27,6 +27,18 @@ By building this component, we will achieve a user interface that allows users t
           />
         </div>
         <div>
+          <label>Due Date:</label>
+          <input type="date" v-model="dueDate" required />
+        </div>
+        <div>
+          <label>Priority:</label>
+          <select v-model="priority" required>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
+        </div>
+        <div>
           <label for="timeToBeCompleted">Time to be Completed:</label>
           <input
             v-model="newTask.description.timeToBeCompleted"
@@ -35,6 +47,7 @@ By building this component, we will achieve a user interface that allows users t
             required
           />
         </div>
+        <div></div>
         <div>
           <label for="extraInfo">Extra Info Required:</label>
           <input v-model="newExtraInfo" type="text" id="extraInfo" />
@@ -48,6 +61,17 @@ By building this component, we will achieve a user interface that allows users t
               <button type="button" @click="removeExtraInfo(index)">
                 Remove
               </button>
+            </li>
+          </ul>
+          <label>Subtasks:</label>
+          <input
+            v-model="subtaskTitle"
+            @keyup.enter="addSubtask"
+            placeholder="Add subtask and press Enter"
+          />
+          <ul>
+            <li v-for="subtask in subtasks" :key="subtask.id">
+              {{ subtask.title }}
             </li>
           </ul>
         </div>
@@ -122,6 +146,17 @@ const addExtraInfo = () => {
     newExtraInfo.value = ""; // Clear the input field
   }
 };
+
+function addSubtask() {
+  if (subtaskTitle.value.trim() !== "") {
+    subtasks.value.push({
+      id: Date.now(),
+      title: subtaskTitle.value.trim(),
+      isCompleted: false,
+    });
+    subtaskTitle.value = "";
+  }
+}
 
 /*
   The addExtraInfo function adds an extra information item to the new task's description.
