@@ -1,7 +1,11 @@
 <template>
-  <header>
+  <header class="text-amber-500">
     <div class="wrapper">
-      <HelloWorld msg="To Do List Application" />
+      <div
+        class="text-5xl uppercase pt-10 p-5 m-5 border-b border-amber-300 flex justify-center"
+      >
+        <HelloWorld msg="To Do List Application" />
+      </div>
       <!-- Navigation links -->
       <nav>
         <template v-if="!isLoggedIn">
@@ -9,14 +13,17 @@
           <RouterLink to="/auth/login">Login</RouterLink>
           <RouterLink to="/auth/register">Register</RouterLink>
         </template>
+
         <template v-else>
           <!-- If the user is logged in, show these links -->
-          <RouterLink to="/">Home</RouterLink>
-          <RouterLink to="/about">About</RouterLink>
-          <RouterLink to="/all-tasks">All Tasks</RouterLink>
-          <RouterLink to="/completed-tasks">Completed Tasks</RouterLink>
-          <RouterLink to="/add-task">Add New Task</RouterLink>
-          <button @click="handleSignOut">Sign Out</button>
+          <div class="text-3xl font-bold p-5 m-5 flex justify-around">
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/about">About</RouterLink>
+            <RouterLink to="/all-tasks">All Tasks</RouterLink>
+            <RouterLink to="/completed-tasks">Completed Tasks</RouterLink>
+            <RouterLink to="/add-task">Add New Task</RouterLink>
+            <button @click="handleSignOut">Sign Out</button>
+          </div>
         </template>
       </nav>
     </div>

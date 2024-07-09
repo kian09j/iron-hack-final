@@ -1,101 +1,98 @@
 <template>
-  <div>
-    <h3>Add New Task</h3>
-    <form @submit.prevent="addNewTask">
-      <label>Title:</label>
-      <input v-model="title" required />
+  <h4>This Page Displays all tasks</h4>
 
-      <label>Description:</label>
-      <input v-model="descriptionTitle" required />
+  <div class="container">
+    <div>
+      <label for="sort">Sort by:</label>
+      <select id="sort" v-model="sortOption" @change="sortTasks">
+        <option value="dueDate">Due Date</option>
+        <option value="priority">Priority</option>
+        <option value="completionStatus">Completion Status</option>
+      </select>
+    </div>
 
-      <label>Time to Be Completed:</label>
-      <input v-model="timeToBeCompleted" required />
+    <ul>
+      <li v-for="task in sortedTasks" :key="task.id">
+        <h5>{{ task.title }}</h5>
+        <h6>{{ task.description.title }}</h6>
+        <h6>{{ task.description.timeToBeCompleted }}</h6>
+        <ul>
+          <li
+            v-for="(extraInfo, index) in task.description.extraInfoRequired"
+            :key="index"
+          >
+            {{ extraInfo }}
+          </li>
+        </ul>
+        <h6>{{ task.isCompleted ? "Completed" : "Incomplete" }}</h6>
+        <h6>Due date: {{ task.dueDate }}</h6>
+        <p>Priority: {{ task.priority }}</p>
 
-      <label>Extra Info Required:</label>
-      <input
-        v-model="extraInfo"
-        @keyup.enter="addExtraInfo"
-        placeholder="Add extra info and press Enter"
-      />
-      <ul>
-        <li v-for="info in extraInfoRequired" :key="info">{{ info }}</li>
-      </ul>
-      <div>
-        <label>Due Date:</label>
-        <input type="date" v-model="dueDate" required />
-      </div>
-      <div>
-        <label>Priority:</label>
-        <select v-model="priority" required>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-        </select>
-      </div>
-      <div>
-        <label>Subtasks:</label>
-        <div v-for="(subtask, index) in subtasks" :key="index">
-          <input v-model="subtask.title" placeholder="Subtask title" required />
-          <button type="button" @click="removeSubtask(index)">Remove</button>
-        </div>
-        <button type="button" @click="addSubtask">Add Subtask</button>
-      </div>
-      <button type="submit">Add Task</button>
-    </form>
+        <ul>
+          <li v-for="subtask in task.subtasks" :key="subtask.id">
+            <p>
+              {{ subtask.title }} -
+              {{ subtask.isCompleted ? "Completed" : "Incomplete" }}
+            </p>
+            <button
+              :disabled="subtask.isCompleted"
+              @click="markSubtaskCompleted(task.id, subtask.id)"
+            >
+              Mark Subtask as Completed
+            </button>
+          </li>
+        </ul>
+
+        <button
+          :disabled="task.isCompleted"
+          @click="markTaskCompleted(task.id)"
+        >
+          Mark as Completed
+        </button>
+        <button @click="deleteTask(task.id)">Delete Task</button>
+        <router-link :to="{ name: 'EditTask', params: { taskId: task.id } }">
+          <button>Edit</button>
+        </router-link>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, computed } from "vue";
 import { useTaskStore } from "../stores/taskStore";
 
 const taskStore = useTaskStore();
-const router = useRouter();
+const { tasks, deleteTask, markTaskCompleted, updateTask } = taskStore;
 
-const title = ref("");
-const descriptionTitle = ref("");
-const timeToBeCompleted = ref("");
-const extraInfo = ref("");
-const extraInfoRequired = ref([]);
-const dueDate = ref("");
-const priority = ref("medium");
+const sortOption = ref("dueDate");
 
-const subtasks = ref([{ title: "", isCompleted: false }]); // Initialize with one subtask
+const sortedTasks = computed(() => {
+  return [...tasks].sort((a, b) => {
+    if (sortOption.value === "dueDate") {
+      return new Date(a.dueDate) - new Date(b.dueDate);
+    } else if (sortOption.value === "priority") {
+      const priorityOrder = { low: 1, medium: 2, high: 3 };
+      return priorityOrder[a.priority] - priorityOrder[b.priority];
+    } else if (sortOption.value === "completionStatus") {
+      return a.isCompleted - b.isCompleted;
+    }
+  });
+});
 
-function addExtraInfo() {
-  if (extraInfo.value.trim() !== "") {
-    extraInfoRequired.value.push(extraInfo.value.trim());
-    extraInfo.value = "";
+function sortTasks() {
+  sortedTasks.value;
+}
+
+function markSubtaskCompleted(taskId, subtaskId) {
+  const task = tasks.find((task) => task.id === taskId);
+  if (task) {
+    const subtask = task.subtasks.find((subtask) => subtask.id === subtaskId);
+    if (subtask) {
+      subtask.isCompleted = true;
+      updateTask(task);
+    }
   }
-}
-
-function addSubtask() {
-  subtasks.value.push({ title: "", isCompleted: false });
-}
-
-function removeSubtask(index) {
-  subtasks.value.splice(index, 1);
-}
-
-function addNewTask() {
-  const newTask = {
-    id: Date.now(),
-    title: title.value,
-    description: {
-      title: descriptionTitle.value,
-      timeToBeCompleted: timeToBeCompleted.value,
-      extraInfoRequired: extraInfoRequired.value,
-    },
-    dueDate: dueDate.value,
-    priority: priority.value,
-    isCompleted: false,
-    subtasks: subtasks.value, // Include subtasks
-    userId: 1,
-  };
-
-  taskStore.addTask(newTask);
-  router.push("/all-tasks");
 }
 </script>
 
