@@ -4,78 +4,146 @@ By building this component, we will achieve a user interface that allows users t
 -->
 
 <template>
-  <div>
-    <h1>Add New Task</h1>
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Add New Task</h1>
+
     <!-- v-if directive to show success message if taskAdded is true, otherwise show the form -->
-    <div v-if="taskAdded">
-      <p>Yay! New task created.</p>
-      <button @click="startNewTask">Start a New Task</button>
+    <div v-if="taskAdded" class="bg-green-100 p-4 rounded-lg shadow-md">
+      <p class="text-green-700">Yay! New task created.</p>
+      <button
+        @click="startNewTask"
+        class="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+      >
+        Start a New Task
+      </button>
     </div>
-    <div v-else>
+
+    <div v-else class="bg-white p-6 rounded-lg shadow-md">
       <form @submit.prevent="handleSubmit">
-        <div>
-          <label for="title">Title:</label>
-          <input v-model="newTask.title" type="text" id="title" required />
+        <div class="mb-4">
+          <label for="title" class="block text-gray-700">Title:</label>
+          <input
+            v-model="newTask.title"
+            type="text"
+            id="title"
+            class="w-full p-2 border rounded mt-1"
+            required
+          />
         </div>
-        <div>
-          <label for="descriptionTitle">Description Title:</label>
+
+        <div class="mb-4">
+          <label for="descriptionTitle" class="block text-gray-700"
+            >Description Title:</label
+          >
           <input
             v-model="newTask.description.title"
             type="text"
             id="descriptionTitle"
+            class="w-full p-2 border rounded mt-1"
             required
           />
         </div>
-        <div>
-          <label>Due Date:</label>
-          <input type="date" v-model="dueDate" required />
+
+        <div class="mb-4">
+          <label for="dueDate" class="block text-gray-700">Due Date:</label>
+          <input
+            type="date"
+            v-model="dueDate"
+            id="dueDate"
+            class="w-full p-2 border rounded mt-1"
+            required
+          />
         </div>
-        <div>
-          <label>Priority:</label>
-          <select v-model="priority" required>
+
+        <div class="mb-4">
+          <label for="priority" class="block text-gray-700">Priority:</label>
+          <select
+            v-model="priority"
+            id="priority"
+            class="w-full p-2 border rounded mt-1"
+            required
+          >
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
           </select>
         </div>
-        <div>
-          <label for="timeToBeCompleted">Time to be Completed:</label>
+
+        <div class="mb-4">
+          <label for="timeToBeCompleted" class="block text-gray-700"
+            >Time to be Completed:</label
+          >
           <input
             v-model="newTask.description.timeToBeCompleted"
             type="text"
             id="timeToBeCompleted"
+            class="w-full p-2 border rounded mt-1"
             required
           />
         </div>
-        <div></div>
-        <div>
-          <label for="extraInfo">Extra Info Required:</label>
-          <input v-model="newExtraInfo" type="text" id="extraInfo" />
-          <button type="button" @click="addExtraInfo">Add Info</button>
-          <ul>
+
+        <div class="mb-4">
+          <label for="extraInfo" class="block text-gray-700"
+            >Extra Info Required:</label
+          >
+          <div class="flex items-center">
+            <input
+              v-model="newExtraInfo"
+              type="text"
+              id="extraInfo"
+              class="flex-grow p-2 border rounded mt-1"
+            />
+            <button
+              type="button"
+              @click="addExtraInfo"
+              class="ml-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >
+              Add Info
+            </button>
+          </div>
+          <ul class="mt-2 list-disc pl-5">
             <li
               v-for="(info, index) in newTask.description.extraInfoRequired"
               :key="index"
+              class="text-sm text-gray-700 flex justify-between items-center"
             >
               {{ info }}
-              <button type="button" @click="removeExtraInfo(index)">
+              <button
+                type="button"
+                @click="removeExtraInfo(index)"
+                class="text-red-500 ml-2"
+              >
                 Remove
               </button>
             </li>
           </ul>
-          <label>Subtasks:</label>
+        </div>
+
+        <div class="mb-4">
+          <label for="subtasks" class="block text-gray-700">Subtasks:</label>
           <input
             v-model="subtaskTitle"
             @keyup.enter="addSubtask"
             placeholder="Add subtask and press Enter"
+            class="w-full p-2 border rounded mt-1"
           />
-          <ul>
-            <li v-for="subtask in subtasks" :key="subtask.id">
+          <ul class="mt-2 list-disc pl-5">
+            <li
+              v-for="subtask in subtasks"
+              :key="subtask.id"
+              class="text-sm text-gray-700"
+            >
               {{ subtask.title }}
             </li>
           </ul>
         </div>
-        <button type="submit">Add Task</button>
+
+        <button
+          type="submit"
+          class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >
+          Add Task
+        </button>
       </form>
     </div>
   </div>

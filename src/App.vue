@@ -1,32 +1,45 @@
 <template>
-  <header class="text-amber-500">
-    <div class="wrapper">
-      <div
-        class="text-5xl uppercase pt-10 p-5 m-5 border-b border-amber-300 flex justify-center"
-      >
-        <HelloWorld msg="To Do List Application" />
-      </div>
-      <!-- Navigation links -->
-      <nav>
-        <template v-if="!isLoggedIn">
-          <!-- If the user is not logged in, show these links -->
-          <RouterLink to="/auth/login">Login</RouterLink>
-          <RouterLink to="/auth/register">Register</RouterLink>
-        </template>
+  <header class="bg-white shadow-lg">
+    <!-- Navigation links -->
+    <nav class="border-b border-amber-300">
+      <template v-if="!isLoggedIn">
+        <!-- If the user is not logged in, show these links -->
+        <div class="flex justify-between p-4 text-3xl font-bold text-amber-800">
+          <RouterLink to="/auth/login" class="mx-4">Login</RouterLink>
+          <RouterLink to="/auth/register" class="mx-4">Register</RouterLink>
+        </div>
+      </template>
 
-        <template v-else>
-          <!-- If the user is logged in, show these links -->
-          <div class="text-3xl font-bold p-5 m-5 flex justify-around">
-            <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/about">About</RouterLink>
-            <RouterLink to="/all-tasks">All Tasks</RouterLink>
-            <RouterLink to="/completed-tasks">Completed Tasks</RouterLink>
-            <RouterLink to="/add-task">Add New Task</RouterLink>
-            <button @click="handleSignOut">Sign Out</button>
+      <template v-else>
+        <!-- If the user is logged in, show these links -->
+        <div
+          class="flex justify-between items-center p-5 text-3xl font-bold text-amber-500"
+        >
+          <div
+            class="text-black text-5xl uppercase pt-10 pb-5 flex justify-center"
+          >
+            <HelloWorld msg="To Do List Application" />
           </div>
-        </template>
-      </nav>
-    </div>
+          <RouterLink to="/" class="mx-4 text-zinc-950">Home</RouterLink>
+          <RouterLink to="/about" class="mx-4 text-zinc-950">About</RouterLink>
+          <RouterLink to="/all-tasks" class="mx-4 text-zinc-950"
+            >All Tasks</RouterLink
+          >
+          <RouterLink to="/completed-tasks" class="mx-4 text-zinc-950"
+            >Completed Tasks</RouterLink
+          >
+          <RouterLink to="/add-task" class="mx-4 text-zinc-950"
+            >Add New Task</RouterLink
+          >
+          <button
+            @click="handleSignOut"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mx-4"
+          >
+            Sign Out
+          </button>
+        </div>
+      </template>
+    </nav>
   </header>
 
   <!-- RouterView to display the current route's component -->
@@ -115,9 +128,3 @@ let handleSignOut = () => {
 
 // Additional lifecycle hooks such as onBeforeMount and onUpdated can be added here if needed.
 </script>
-
-<!-- 
-What is storeToRefs?
-In order to extract properties from the store while keeping its reactivity, you need to use storeToRefs(). It will create refs for every reactive property. This is useful when you are only using state from the store but not calling any action. Note you can destructure actions directly from the store as they are bound to the store itself too.
-Link: https://pinia.vuejs.org/core-concepts/
--->

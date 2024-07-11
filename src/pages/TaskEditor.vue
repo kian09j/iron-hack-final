@@ -1,59 +1,114 @@
 <template>
-  <div>
-    <h1>Edit Task</h1>
-    <form @submit.prevent="saveTask">
-      <div>
-        <label for="title">Title</label>
-        <input id="title" v-model="task.title" type="text" />
+  <div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Edit Task</h1>
+    <form @submit.prevent="saveTask" class="space-y-4">
+      <div class="flex flex-col">
+        <label for="title" class="mb-1 font-semibold">Title</label>
+        <input
+          id="title"
+          v-model="task.title"
+          type="text"
+          class="p-2 border rounded"
+        />
       </div>
-      <div>
-        <label for="description">Description</label>
-        <input id="description" v-model="task.description.title" type="text" />
+      <div class="flex flex-col">
+        <label for="description" class="mb-1 font-semibold">Description</label>
+        <input
+          id="description"
+          v-model="task.description.title"
+          type="text"
+          class="p-2 border rounded"
+        />
       </div>
-      <div>
-        <label for="timeToBeCompleted">Time to be Completed</label>
+      <div class="flex flex-col">
+        <label for="timeToBeCompleted" class="mb-1 font-semibold"
+          >Time to be Completed</label
+        >
         <input
           id="timeToBeCompleted"
           v-model="task.description.timeToBeCompleted"
           type="text"
+          class="p-2 border rounded"
         />
       </div>
-      <div>
-        <label for="extraInfoRequired">Extra Info Required</label>
-        <input id="extraInfoRequired" v-model="extraInfo" type="text" />
-        <button type="button" @click="addExtraInfo">Add</button>
+      <div class="flex flex-col">
+        <label for="extraInfoRequired" class="mb-1 font-semibold"
+          >Extra Info Required</label
+        >
+        <div class="flex items-center space-x-2">
+          <input
+            id="extraInfoRequired"
+            v-model="extraInfo"
+            type="text"
+            class="p-2 border rounded flex-1"
+          />
+          <button
+            type="button"
+            @click="addExtraInfo"
+            class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Add
+          </button>
+        </div>
       </div>
       <div>
-        <ul>
+        <ul class="list-disc pl-5">
           <li
             v-for="(info, index) in task.description.extraInfoRequired"
             :key="index"
+            class="text-gray-700"
           >
             {{ info }}
           </li>
         </ul>
       </div>
-      <div>
-        <label>Due Date:</label>
-        <input type="date" v-model="task.dueDate" required />
+      <div class="flex flex-col">
+        <label for="dueDate" class="mb-1 font-semibold">Due Date</label>
+        <input
+          id="dueDate"
+          type="date"
+          v-model="task.dueDate"
+          required
+          class="p-2 border rounded"
+        />
       </div>
-
-      <label>Priority:</label>
-      <select v-model="task.priority" required>
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
-
-      <div>
-        <label for="isCompleted">Is Completed</label>
-        <input id="isCompleted" v-model="task.isCompleted" type="checkbox" />
+      <div class="flex flex-col">
+        <label for="priority" class="mb-1 font-semibold">Priority</label>
+        <select
+          id="priority"
+          v-model="task.priority"
+          required
+          class="p-2 border rounded"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
       </div>
-      <div>
-        <label for="isFav">Is Favorite</label>
-        <input id="isFav" v-model="task.isFav" type="checkbox" />
+      <div class="flex items-center space-x-2">
+        <input
+          id="isCompleted"
+          v-model="task.isCompleted"
+          type="checkbox"
+          class="form-checkbox"
+        />
+        <label for="isCompleted" class="font-semibold">Is Completed</label>
       </div>
-      <button type="submit">Save</button>
+      <div class="flex items-center space-x-2">
+        <input
+          id="isFav"
+          v-model="task.isFav"
+          type="checkbox"
+          class="form-checkbox"
+        />
+        <label for="isFav" class="font-semibold">Is Favorite</label>
+      </div>
+      <button
+        type="submit"
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+      >
+        Save
+      </button>
     </form>
   </div>
 </template>

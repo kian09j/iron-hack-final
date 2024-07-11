@@ -1,67 +1,82 @@
-<!-- 
-This file defines the Home View component of a Vue.js application.
-It demonstrates how to consume and display data from a Pinia store, and how to call store functions.
--->
-
 <template>
-  <main class="container">
-    <h4>Home View</h4>
+  <div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-4">Welcome back!</h2>
 
-    <!-- First way of consuming data from the store -->
-    <!-- Even though it is accessible, this can be hard to read, so get used to reading -->
-    <p>{{ useCounterStore().count }}</p>
+    <!-- Quick Actions -->
+    <div class="flex justify-end items-center mb-4">
+      <router-link
+        to="/add-task"
+        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+        >Add New Task</router-link
+      >
+      <router-link
+        to="/all-tasks"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+        >View All Tasks</router-link
+      >
+    </div>
 
-    <!-- Using 2nd way -->
-    <p>{{ countNumber }}</p>
-    <p>{{ doubleCountNumber }}</p>
-    <button @click="incrementNumberFunctionFromStore">Add +1</button>
-  </main>
+    <!-- Task Lists -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Upcoming Tasks -->
+      <div class="bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105">
+        <h3 class="text-lg font-bold mb-2">Upcoming Tasks</h3>
+        <ul>
+          <li
+            v-for="task in upcomingTasks"
+            :key="task.id"
+            class="text-gray-700"
+          >
+            {{ task.title }} - {{ task.dueDate }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Overdue Tasks -->
+      <div class="bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105">
+        <h3 class="text-lg font-bold mb-2">Overdue Tasks</h3>
+        <ul>
+          <li v-for="task in overdueTasks" :key="task.id" class="text-gray-700">
+            {{ task.title }} - {{ task.dueDate }}
+          </li>
+        </ul>
+      </div>
+
+      <!-- Recently Completed Tasks -->
+      <div
+        class="col-span-2 md:col-span-1 bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105"
+      >
+        <h3 class="text-lg font-bold mb-2">Recently Completed Tasks</h3>
+        <ul>
+          <li
+            v-for="task in recentlyCompletedTasks"
+            :key="task.id"
+            class="text-gray-700"
+          >
+            {{ task.title }} - Completed on {{ task.completedDate }}
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-// ------------------------------------------------------------------------
-// Import Block
-// ------------------------------------------------------------------------
+import { ref } from "vue";
 
-// Import computed from Vue for reactive calculations
-import { computed } from "vue";
-// Import useCounterStore to access the counter store
-import { useCounterStore } from "../stores/counter";
-import { useUserStore } from "../stores/user";
-import { storeToRefs } from "pinia";
+// Mock data for demonstration
+const upcomingTasks = ref([
+  { id: 1, title: "Task 1", dueDate: "2024-08-15" },
+  { id: 2, title: "Task 2", dueDate: "2024-08-20" },
+]);
 
-// ------------------------------------------------------------------------
-// Store Access Block
-// ------------------------------------------------------------------------
+const overdueTasks = ref([
+  { id: 3, title: "Task 3", dueDate: "2024-07-31" },
+  { id: 4, title: "Task 4", dueDate: "2024-07-25" },
+]);
 
-// Access the counter store and store it in a variable for easier reference
-let countStore = useCounterStore();
-
-// ------------------------------------------------------------------------
-// Computed Properties Block
-// ------------------------------------------------------------------------
-
-// Store the 'count' variable from the store in a computed property for real-time updates
-let countNumber = computed(() => countStore.count);
-
-// Store the 'doubleCount' variable from the store
-let doubleCountNumber = countStore.doubleCount;
-
-// ------------------------------------------------------------------------
-// Methods Block
-// ------------------------------------------------------------------------
-
-// Access the 'increment' function from the store to be used in the template
-let incrementNumberFunctionFromStore = countStore.increment;
-
-const userStore = useUserStore();
-const { getTasksForUser } = storeToRefs(userStore);
-
-console.log(userStore.getTasksForUser());
-
-/*
-  The incrementNumberFunctionFromStore is used to increment the count in the store.
-  - It accesses the increment function from the counter store.
-  - This function is called when the button in the template is clicked.
-  */
+const recentlyCompletedTasks = ref([
+  { id: 5, title: "Task 5", completedDate: "2024-07-10" },
+  { id: 6, title: "Task 6", completedDate: "2024-07-08" },
+]);
 </script>
