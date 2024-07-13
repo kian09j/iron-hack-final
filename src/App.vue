@@ -41,7 +41,7 @@
           >
           <button
             @click="handleSignOut"
-            class="text-white px-4 py-2 rounded bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-700 hover:to-pink-700 transition transform duration-300 ease-in-out hover:scale-105"
+            class="text-white text-lg px-4 py-2 rounded bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-700 hover:to-pink-700 transition transform duration-300 ease-in-out hover:scale-105"
           >
             Sign Out
           </button>
