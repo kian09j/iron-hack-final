@@ -1,61 +1,71 @@
 <template>
-  <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-4">Welcome back!</h2>
+  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
+    <div class="container min-h-screen mx-auto p-4">
+      <h2 class="text-2xl font-bold mb-4">Welcome back!</h2>
 
-    <!-- Quick Actions -->
-    <div class="flex justify-end items-center mb-4">
-      <router-link
-        to="/add-task"
-        class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-        >Add New Task</router-link
-      >
-      <router-link
-        to="/all-tasks"
-        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >View All Tasks</router-link
-      >
-    </div>
-
-    <!-- Task Lists -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Upcoming Tasks -->
-      <div class="bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105">
-        <h3 class="text-lg font-bold mb-2">Upcoming Tasks</h3>
-        <ul>
-          <li
-            v-for="task in upcomingTasks"
-            :key="task.id"
-            class="text-gray-700"
-          >
-            {{ task.title }} - {{ task.dueDate }}
-          </li>
-        </ul>
+      <!-- Quick Actions -->
+      <div class="flex justify-end items-center mb-4">
+        <router-link
+          to="/add-task"
+          class="text-white px-4 py-2 rounded bg-gradient-to-r from-green-400 to-green-500 hover:from-green-600 hover:to-green-700"
+          >Add New Task</router-link
+        >
+        <router-link
+          to="/all-tasks"
+          class="text-white px-4 py-2 rounded bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700"
+          >View All Tasks</router-link
+        >
       </div>
 
-      <!-- Overdue Tasks -->
-      <div class="bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105">
-        <h3 class="text-lg font-bold mb-2">Overdue Tasks</h3>
-        <ul>
-          <li v-for="task in overdueTasks" :key="task.id" class="text-gray-700">
-            {{ task.title }} - {{ task.dueDate }}
-          </li>
-        </ul>
-      </div>
+      <!-- Task Lists -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Upcoming Tasks -->
+        <div
+          class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md p-4 transition transform duration-300 ease-in-out hover:scale-105"
+        >
+          <h3 class="text-lg font-bold mb-2">Upcoming Tasks</h3>
+          <ul>
+            <li
+              v-for="task in upcomingTasks"
+              :key="task.id"
+              class="text-gray-700"
+            >
+              {{ task.title }} - {{ task.dueDate }}
+            </li>
+          </ul>
+        </div>
 
-      <!-- Recently Completed Tasks -->
-      <div
-        class="col-span-2 md:col-span-1 bg-amber-100 rounded-lg shadow-md p-4 hover:scale-105"
-      >
-        <h3 class="text-lg font-bold mb-2">Recently Completed Tasks</h3>
-        <ul>
-          <li
-            v-for="task in recentlyCompletedTasks"
-            :key="task.id"
-            class="text-gray-700"
-          >
-            {{ task.title }} - Completed on {{ task.completedDate }}
-          </li>
-        </ul>
+        <!-- Overdue Tasks -->
+        <div
+          class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md p-4 transition transform duration-300 ease-in-out hover:scale-105"
+        >
+          <h3 class="text-lg font-bold mb-2">Overdue Tasks</h3>
+          <ul>
+            <li
+              v-for="task in overdueTasks"
+              :key="task.id"
+              class="text-gray-700"
+            >
+              {{ task.title }} - {{ task.dueDate }}
+            </li>
+          </ul>
+        </div>
+
+        <!-- Recently Completed Tasks -->
+        <div
+          class="col-span-2 md:col-span-1 bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg shadow-md p-4 transition transform duration-300 ease-in-out hover:scale-105"
+        >
+          <h3 class="text-lg font-bold mb-2">Recently Completed Tasks</h3>
+          <ul>
+            <li
+              v-for="task in recentlyCompletedTasks"
+              :key="task.id"
+              class="text-gray-700"
+            >
+              {{ task.title }} - Completed on {{ task.completedDate }}
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -64,7 +74,8 @@
 <script setup>
 import { ref } from "vue";
 
-// Mock data for demonstration
+// Mock data for tasks
+
 const upcomingTasks = ref([
   { id: 1, title: "Task 1", dueDate: "2024-08-15" },
   { id: 2, title: "Task 2", dueDate: "2024-08-20" },

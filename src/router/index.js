@@ -6,6 +6,7 @@ import CompletedTasksPage from "../pages/CompletedTasksPage.vue";
 import AddTaskPage from "../pages/AddTaskPage.vue";
 import AuthPage from "../pages/AuthPage.vue";
 import TaskEditor from "../pages/TaskEditor.vue";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import SignIn from "../components/SignIn.vue";
 import SignUp from "../components/SignUp.vue";

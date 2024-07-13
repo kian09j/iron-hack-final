@@ -1,7 +1,7 @@
 <template>
-  <header class="bg-white shadow-lg">
+  <header class="from-current">
     <!-- Navigation links -->
-    <nav class="border-b border-amber-300">
+    <nav class="bg-gradient-to-r from-cyan-50 to-blue-50">
       <template v-if="!isLoggedIn">
         <!-- If the user is not logged in, show these links -->
         <div class="flex justify-between p-4 text-3xl font-bold text-amber-800">
@@ -13,27 +13,35 @@
       <template v-else>
         <!-- If the user is logged in, show these links -->
         <div
-          class="flex justify-between items-center p-5 text-3xl font-bold text-amber-500"
+          class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500"
         >
           <div
-            class="text-black text-5xl uppercase pt-10 pb-5 flex justify-center"
+            class="text-black text-6xl uppercase pt-10 pb-5 flex justify-center"
           >
             <HelloWorld msg="To Do List Application" />
           </div>
-          <RouterLink to="/" class="mx-4 text-zinc-950">Home</RouterLink>
-          <RouterLink to="/about" class="mx-4 text-zinc-950">About</RouterLink>
-          <RouterLink to="/all-tasks" class="mx-4 text-zinc-950"
+          <RouterLink to="/" class="nav-item mx-4 text-zinc-950 text-xl"
+            >Home</RouterLink
+          >
+          <RouterLink to="/about" class="nav-item mx-4 text-zinc-950 text-xl"
+            >About</RouterLink
+          >
+          <RouterLink
+            to="/all-tasks"
+            class="nav-item mx-4 text-zinc-950 text-xl"
             >All Tasks</RouterLink
           >
-          <RouterLink to="/completed-tasks" class="mx-4 text-zinc-950"
+          <RouterLink
+            to="/completed-tasks"
+            class="nav-item mx-4 text-zinc-950 text-xl"
             >Completed Tasks</RouterLink
           >
-          <RouterLink to="/add-task" class="mx-4 text-zinc-950"
+          <RouterLink to="/add-task" class="nav-item mx-4 text-zinc-950 text-xl"
             >Add New Task</RouterLink
           >
           <button
             @click="handleSignOut"
-            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mx-4"
+            class="text-white px-4 py-2 rounded bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-700 hover:to-pink-700 transition transform duration-300 ease-in-out hover:scale-105"
           >
             Sign Out
           </button>
@@ -45,6 +53,36 @@
   <!-- RouterView to display the current route's component -->
   <RouterView />
 </template>
+
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap");
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
+.nav-item {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 4px; /* Adjust padding as needed */
+}
+
+.nav-item::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px; /* Adjust the height of the line */
+  background-color: #000; /* Adjust the color of the line */
+  transition: all 0.3s ease-out; /* Adjust the transition timing */
+  transform: translateX(-50%);
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+</style>
 
 <script setup>
 // ------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 <template>
-  <div class="container mx-auto p-4">
-    <div class="bg-white p-6 rounded-lg shadow-lg">
+  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
+
+  <div class="container min-h-screen mx-auto p-4">
+    <div class="bg-gradient-to-r from-pink-50 to-yellow-100 p-6 rounded-lg shadow-lg">
       <p class="mb-4">
         <div class="font-bold text-2xl">Welcome to my To-Do List Application!</div> I created this app as a project to
         help me stay organized with my daily tasks.
@@ -25,6 +27,7 @@
         >
       </p>
     </div>
+  </div>
   </div>
 </template>
 
