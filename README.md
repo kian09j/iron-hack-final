@@ -1,7 +1,19 @@
 <<<<<<< HEAD
+
 # ToDo Application
 
 This is a Vue.js-based ToDo application that utilizes Pinia for state management and Vue Router for navigation. The application allows users to manage their tasks, including adding new tasks, viewing all tasks, marking tasks as completed, and deleting tasks. Users can also register and log in to the application.
+
+## Git Combinators
+
+Git Combinators
+Use these to save a bit of time when pushing updates to github.
+Update
+git add . && git commit -m “update - ” && git push origin main
+Delete
+git add . && git commit -m “deleted - ” && git push origin main
+Create
+git add . && git commit -m “created - ” && git push origin main
 
 ## Table of Contents
 
@@ -235,7 +247,8 @@ Analyse the following file containing [vue syntax] and I want you to provide to 
 
 FILE:
 
-(Paste a copy of your file here)
-=======
+# (Paste a copy of your file here)
+
 # iron-hack-final
->>>>>>> 7778d403b4e32c0655ab145aa7fae295220b69c2
+
+> > > > > > > 7778d403b4e32c0655ab145aa7fae295220b69c2

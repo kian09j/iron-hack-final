@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
+  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900">
 
   <div class="container min-h-screen mx-auto p-4">
     <div class="bg-gradient-to-r from-pink-50 to-yellow-100 p-6 rounded-lg shadow-lg">

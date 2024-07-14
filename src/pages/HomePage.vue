@@ -1,7 +1,9 @@
 <template>
-  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
+  <div
+    class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900"
+  >
     <div class="container min-h-screen mx-auto p-4">
-      <h2 class="text-2xl font-bold mb-4">Welcome back!</h2>
+      <h2 class="text-2xl font-bold mb-4 dark:text-white">Welcome back!</h2>
 
       <!-- Quick Actions -->
       <div class="flex justify-end items-center mb-4">

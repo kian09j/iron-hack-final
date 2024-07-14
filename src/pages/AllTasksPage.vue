@@ -1,9 +1,11 @@
 <template>
-  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
-    <div
-      class="min-h-screen container mx-auto p-4 bg-gradient-to-r from-cyan-50 to-blue-50 w-full"
-    >
-      <h4 class="text-2xl font-bold mb-4 flex items-center">Your tasks:</h4>
+  <div
+    class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900"
+  >
+    <div class="min-h-screen container mx-auto p-4w-full">
+      <h4 class="text-2xl font-bold mb-4 flex items-center dark:text-white">
+        Your tasks:
+      </h4>
 
       <div class="flex justify-end items-center mb-4">
         <label for="sort" class="block mb-2">Sort by:</label>

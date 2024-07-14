@@ -1,42 +1,56 @@
 <template>
-  <header class="from-current">
+  <header>
     <!-- Navigation links -->
-    <nav class="bg-gradient-to-r from-cyan-50 to-blue-50">
+    <nav
+      class="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900"
+    >
+      <div
+        class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
+      >
+        <div
+          class="text-black text-6xl uppercase pt-10 pb-5 flex justify-center dark:text-white"
+        >
+          <HelloWorld msg="To Do List Application" />
+        </div>
+        <DarkModeToggle />
+      </div>
       <template v-if="!isLoggedIn">
         <!-- If the user is not logged in, show these links -->
-        <div class="flex justify-between p-4 text-3xl font-bold text-amber-800">
+        <div
+          class="flex justify-between p-4 text-3xl font-bold text-amber-800 dark:text-amber-300"
+        >
           <RouterLink to="/auth/login" class="mx-4">Login</RouterLink>
           <RouterLink to="/auth/register" class="mx-4">Register</RouterLink>
         </div>
       </template>
-
       <template v-else>
         <!-- If the user is logged in, show these links -->
         <div
-          class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500"
+          class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
         >
-          <div
-            class="text-black text-6xl uppercase pt-10 pb-5 flex justify-center"
-          >
-            <HelloWorld msg="To Do List Application" />
-          </div>
-          <RouterLink to="/" class="nav-item mx-4 text-zinc-950 text-xl"
+          <RouterLink
+            to="/"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Home</RouterLink
           >
-          <RouterLink to="/about" class="nav-item mx-4 text-zinc-950 text-xl"
+          <RouterLink
+            to="/about"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >About</RouterLink
           >
           <RouterLink
             to="/all-tasks"
-            class="nav-item mx-4 text-zinc-950 text-xl"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >All Tasks</RouterLink
           >
           <RouterLink
             to="/completed-tasks"
-            class="nav-item mx-4 text-zinc-950 text-xl"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Completed Tasks</RouterLink
           >
-          <RouterLink to="/add-task" class="nav-item mx-4 text-zinc-950 text-xl"
+          <RouterLink
+            to="/add-task"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Add New Task</RouterLink
           >
           <button
@@ -50,7 +64,6 @@
     </nav>
   </header>
 
-  <!-- RouterView to display the current route's component -->
   <RouterView />
 </template>
 
@@ -99,6 +112,7 @@ import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
 // Import useUserStore to access user-related data
 import { useUserStore } from "../src/stores/user";
+import DarkModeToggle from "./components/DarkMode.vue";
 
 // ------------------------------------------------------------------------
 // Variable Definition Block

@@ -9,7 +9,11 @@
   </head>
   <body class="poppins-font">
     <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <script type="module" src="/src/main.js">
+       if (localStorage.getItem('darkMode') === 'true') {
+      document.documentElement.classList.add('dark');
+    }
+    </script>
   </body>
 </html>
 <style scoped>
@@ -18,5 +22,5 @@
   .poppins-font {
       font-family: 'Poppins', sans-serif;
   }
-  
+
   </style>

@@ -1,6 +1,10 @@
 <template>
-  <div class="w-full bg-gradient-to-r from-cyan-50 to-blue-50">
-    <div class="container mx-auto p-4 bg-gradient-to-r from-cyan-50 to-blue-50">
+  <div
+    class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-900"
+  >
+    <div
+      class="container mx-auto p-4 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-900"
+    >
       <h1 class="text-2xl font-bold mb-4">Edit Task</h1>
       <form @submit.prevent="saveTask" class="space-y-4">
         <div class="flex flex-col">

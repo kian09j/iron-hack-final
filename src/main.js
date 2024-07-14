@@ -4,7 +4,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import './index.css'
+import './index.css'; // Ensure this line imports your CSS
 import '@fortawesome/fontawesome-svg-core/styles.css'; 
 
 import { library } from '@fortawesome/fontawesome-svg-core';
