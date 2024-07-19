@@ -91,7 +91,7 @@
         <!-- Desktop Menu -->
         <div
           v-if="isUserLoggedIn"
-          class="hidden md:flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
+          class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
         >
           <RouterLink
             to="/"
