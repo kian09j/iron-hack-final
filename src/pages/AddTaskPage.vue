@@ -292,4 +292,55 @@ input {
 .dark .text-lg {
   color: white;
 }
+
+/* Mobile Styles */
+@media (max-width: 640px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    padding: 0.5rem;
+  }
+
+  input,
+  textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  input,
+  textarea {
+    padding: 1rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1025px) {
+  h2 {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  input,
+  textarea {
+    padding: 1.25rem;
+    font-size: 1.25rem;
+  }
+}
 </style>

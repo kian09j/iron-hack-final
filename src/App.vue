@@ -1,74 +1,126 @@
 <template>
-  <header>
-    <nav class="bg-white dark:bg-slate-900 relative">
-      <div
-        class="flex flex-col md:flex-row items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
-      >
+  <div>
+    <!-- Conditionally render navbar based on route -->
+    <header v-if="!isAuthPage">
+      <nav class="bg-white dark:bg-slate-900 relative">
         <div
-          class="text-black text-6xl uppercase pt-10 pb-5 flex justify-center dark:text-white flex-grow"
+          class="flex flex-col md:flex-row items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
         >
-          <HelloWorld msg="To Do List Application" />
-        </div>
-        <!-- Dark Mode Toggle and Hamburger Menu for small screens -->
-        <div
-          class="flex flex-col md:flex-row items-center space-x-4 md:space-x-0 md:space-y-0 space-y-2 md:space-y-0"
-        >
-          <DarkModeToggle />
-          <button
-            @click="toggleMenu"
-            class="md:hidden text-3xl text-gray-700 dark:text-white"
+          <div
+            class="text-black text-6xl uppercase pt-10 pb-5 flex justify-center dark:text-white flex-grow"
           >
-            <i class="fas fa-bars"></i>
-          </button>
+            <HelloWorld msg="To Do List Application" />
+          </div>
+          <!-- Dark Mode Toggle and Hamburger Menu for small screens -->
+          <div
+            class="flex flex-col md:flex-row items-center space-x-4 md:space-x-0 md:space-y-0 space-y-2 md:space-y-0"
+          >
+            <DarkModeToggle />
+            <button
+              @click="toggleMenu"
+              class="md:hidden text-3xl text-gray-700 dark:text-white"
+            >
+              <i class="fas fa-bars"></i>
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- Mobile Menu -->
-      <div
-        v-if="isMenuOpen"
-        class="fixed inset-0 bg-white dark:bg-slate-900 z-50 md:hidden"
-      >
-        <div class="flex flex-col p-5">
-          <button
-            @click="toggleMenu"
-            class="text-3xl text-gray-700 dark:text-white mb-4"
-          >
-            <i class="fas fa-times"></i>
-          </button>
+        <!-- Mobile Menu -->
+        <div
+          v-if="isMenuOpen"
+          class="fixed inset-0 bg-white dark:bg-slate-900 z-50 md:hidden"
+        >
+          <div class="flex flex-col p-5">
+            <button
+              @click="toggleMenu"
+              class="text-3xl text-gray-700 dark:text-white mb-4"
+            >
+              <i class="fas fa-times"></i>
+            </button>
+            <RouterLink
+              to="/"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              Home
+            </RouterLink>
+            <RouterLink
+              to="/about"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              About
+            </RouterLink>
+            <RouterLink
+              to="/all-tasks"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              All Tasks
+            </RouterLink>
+            <RouterLink
+              to="/completed-tasks"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              Completed Tasks
+            </RouterLink>
+            <RouterLink
+              to="/add-task"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              Add New Task
+            </RouterLink>
+            <RouterLink
+              to="/profile"
+              class="text-2xl text-gray-800 dark:text-white mb-4"
+              @click="toggleMenu"
+            >
+              Account
+            </RouterLink>
+            <button
+              @click="handleSignOut"
+              class="text-white text-lg px-4 py-2 rounded bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-700 hover:to-pink-700 dark:bg-gradient-to-r dark:from-red-700 dark:to-pink-800 dark:hover:bg-gradient-to-r dark:hover:from-red-900 dark:hover:to-pink-950 transition transform duration-300 ease-in-out hover:scale-105"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        <!-- Desktop Menu -->
+        <div
+          v-if="isUserLoggedIn"
+          class="hidden md:flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
+        >
           <RouterLink
             to="/"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Home</RouterLink
           >
           <RouterLink
             to="/about"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >About</RouterLink
           >
           <RouterLink
             to="/all-tasks"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >All Tasks</RouterLink
           >
           <RouterLink
             to="/completed-tasks"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Completed Tasks</RouterLink
           >
           <RouterLink
             to="/add-task"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Add New Task</RouterLink
           >
           <RouterLink
             to="/profile"
-            class="text-2xl text-gray-800 dark:text-white mb-4"
-            @click="toggleMenu"
+            class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
             >Account</RouterLink
           >
           <button
@@ -78,55 +130,11 @@
             Sign Out
           </button>
         </div>
-      </div>
-
-      <!-- Desktop Menu -->
-      <div
-        v-if="isUserLoggedIn"
-        class="hidden md:flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
-      >
-        <RouterLink
-          to="/"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >Home</RouterLink
-        >
-        <RouterLink
-          to="/about"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >About</RouterLink
-        >
-        <RouterLink
-          to="/all-tasks"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >All Tasks</RouterLink
-        >
-        <RouterLink
-          to="/completed-tasks"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >Completed Tasks</RouterLink
-        >
-        <RouterLink
-          to="/add-task"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >Add New Task</RouterLink
-        >
-        <RouterLink
-          to="/profile"
-          class="nav-item mx-4 text-zinc-950 text-xl dark:text-zinc-50"
-          >Account</RouterLink
-        >
-        <button
-          @click="handleSignOut"
-          class="text-white text-lg px-4 py-2 rounded bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-700 hover:to-pink-700 dark:bg-gradient-to-r dark:from-red-700 dark:to-pink-800 dark:hover:bg-gradient-to-r dark:hover:from-red-900 dark:hover:to-pink-950 transition transform duration-300 ease-in-out hover:scale-105"
-        >
-          Sign Out
-        </button>
-      </div>
-    </nav>
-  </header>
-  <RouterView />
+      </nav>
+    </header>
+    <RouterView />
+  </div>
 </template>
-
 <script setup>
 import HelloWorld from "./components/HelloWorld.vue";
 import { ref, onMounted, watch } from "vue";
