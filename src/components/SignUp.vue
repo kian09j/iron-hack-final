@@ -1,150 +1,112 @@
-<!--
-This file defines a Vue.js component for the sign-up process in a to-do application.
-By building this component, we will achieve a user interface that allows users to register by providing their email and password, with state management handled by Pinia.js.
--->
-
 <template>
-  <div class="container">
-    <div class="header">
-      <div class="header-description">
-        <h3 class="header-title">Register to ToDo App</h3>
-        <p class="header-subtitle">Start organizing your tasks!</p>
+  <div class="container mx-auto p-4 dark:bg-slate-900">
+    <h2 class="text-2xl font-bold mb-4">Register</h2>
+    <form @submit.prevent="handleRegister" class="space-y-4">
+      <div class="form-input flex flex-col space-y-2">
+        <label class="text-lg font-semibold">Email</label>
+        <input
+          type="email"
+          v-model="formState.email"
+          class="p-2 border border-gray-300 rounded-md w-full"
+        />
       </div>
-    </div>
-
-    <form @submit.prevent="signUp" class="form-sign-in">
-      <div class="form">
-        <!-- Email Input Field -->
-        <div class="form-input">
-          <label class="input-field-label">E-mail</label>
-          <input
-            type="email"
-            class="input-field"
-            placeholder="example@gmail.com"
-            id="email"
-            v-model="formState.email"
-            required
-          />
-        </div>
-        <!-- Password Input Field -->
-        <div class="form-input">
-          <label class="input-field-label">Password</label>
-          <input
-            type="password"
-            class="input-field"
-            placeholder="**********"
-            id="password"
-            v-model="formState.password"
-            required
-          />
-        </div>
-        <!-- Confirm Password Input Field -->
-        <div class="form-input">
-          <label class="input-field-label">Confirm password</label>
-          <input
-            type="password"
-            class="input-field"
-            placeholder="**********"
-            id="confirmPassword"
-            v-model="formState.confirmPassword"
-            required
-          />
-        </div>
-        <!-- Sign Up Button -->
-        <button class="button" type="submit">Sign Up</button>
-        <p>
-          Have an account?
-          <!-- PersonalRouter component for navigation -->
-          <PersonalRouter
-            :route="goToRoute"
-            :buttonText="buttonText"
-            class="sign-up-link"
-          />
-        </p>
+      <div class="form-input flex flex-col space-y-2">
+        <label class="text-lg font-semibold">Password</label>
+        <input
+          type="password"
+          v-model="formState.password"
+          class="p-2 border border-gray-300 rounded-md w-full"
+        />
       </div>
+      <button
+        type="submit"
+        class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition duration-300 ease-in-out"
+      >
+        Register
+      </button>
     </form>
-
-    <!-- Display error message if any -->
-    <div v-show="formState.errorMsg">{{ formState.errorMsg }}</div>
+    <div v-if="errorMsg" class="mt-4 text-red-500 font-semibold">
+      {{ errorMsg }}
+    </div>
   </div>
 </template>
 
 <script setup>
-// ------------------------------------------------------------------------
-// Import Block
-// ------------------------------------------------------------------------
-
-// Importing reactive from Vue to create a reactive form state object
-import { reactive } from "vue";
-// Importing useRouter from vue-router for navigation
-import { useRouter } from "vue-router";
-// Importing PersonalRouter component for navigation links
-import PersonalRouter from "./PersonalRouter.vue";
-// Importing the useUserStore function from userStore to interact with the user store
+import { ref } from "vue";
 import { useUserStore } from "../stores/user";
+import { useRouter } from "vue-router";
 
-// ------------------------------------------------------------------------
-// Variables Block
-// ------------------------------------------------------------------------
+const userStore = useUserStore();
+const router = useRouter();
 
-// Route Variables for navigating users
-// Remember they are just storing strings
-// Not reactive in nature, so nor eff or reactive
-const goToRoute = "/auth/login";
-const buttonText = "Sign In";
-
-// Consolidating input fields and error messages into a reactive object
-const formState = reactive({
-  email: "", // Stores the email input
-  password: "", // Stores the password input
-  confirmPassword: "", // Stores the confirm password input
-  errorMsg: "", // Stores any error messages
+const formState = ref({
+  email: "",
+  password: "",
 });
 
-// Router instance for navigation
-const router = useRouter();
-// Store user accessed easily here
-const userStore = useUserStore();
+const errorMsg = ref("");
 
-// ------------------------------------------------------------------------
-// Functions Block
-// ------------------------------------------------------------------------
-
-// Function to handle the SignUp process
-const signUp = () => {
-  // Conditional Logic only using a simple IF statement
-  if (formState.password === formState.confirmPassword) {
-    try {
-      // Utilizes the register function from the user store to register the user
-      userStore.register(formState.email, formState.password);
-      // On successful sign up, redirect the user to the login page
-      router.push({ path: goToRoute });
-    } catch (error) {
-      // On failure, display an error message
-      formState.errorMsg = error.message;
-      // Automatically clear the error message after 5 seconds
-      setTimeout(() => {
-        formState.errorMsg = "";
-      }, 5000);
+const handleRegister = async () => {
+  try {
+    await userStore.register(formState.value.email, formState.value.password);
+    if (userStore.isLoggedIn) {
+      router.push("/");
     }
-    return;
+  } catch (error) {
+    errorMsg.value = userStore.errorMsg;
   }
-  // Sets error message if passwords do not match
-  formState.errorMsg = "Passwords do not match. Please try again.";
-  setTimeout(() => {
-    formState.errorMsg = "";
-  }, 2000);
 };
-
-/*
-  The signUp function handles the registration process.
-  - It checks if the passwords match and, if so, calls the register function from the user store to register the user.
-  - On successful registration, it redirects the user to the login page.
-  - If there is an error during registration, it displays an error message and clears it after 5 seconds.
-  - If the passwords do not match, it sets an error message and clears it after 2 seconds.
-  */
 </script>
 
-<style>
-/* Style section remains unchanged */
+<style scoped>
+/* Mobile Styles */
+@media (max-width: 640px) {
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .container {
+    padding: 0.5rem;
+  }
+
+  input,
+  textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* Tablet Styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  h2 {
+    font-size: 1.75rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  input,
+  textarea {
+    padding: 1rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1025px) {
+  h2 {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  input,
+  textarea {
+    padding: 1.25rem;
+    font-size: 1.25rem;
+  }
+}
 </style>

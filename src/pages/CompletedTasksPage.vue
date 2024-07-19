@@ -1,43 +1,18 @@
-<!--
-This file defines a Vue.js component for displaying completed tasks in a to-do application.
-By building this component, we will achieve a user interface that shows a list of tasks marked as completed, leveraging global state management with Pinia.js.
--->
-
 <template>
-  <div
-    class="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900 w-full"
-  >
+  <div class="bg-white dark:bg-slate-900 w-full">
     <div class="w-full container mx-auto p-4">
-      <div class="container min-h-screen mx-auto p-4 container mx-auto p-4">
+      <div class="container min-h-screen mx-auto p-4">
         <h4 class="text-2xl font-bold mb-4 dark:text-white">
           Great job! You've completed these tasks:
         </h4>
 
         <ul class="flex flex-wrap gap-4">
-          <!-- Loop through the completedTasks array and render each task -->
           <li
             v-for="task in completedTasks"
             :key="task.id"
-            class="bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-lg shadow-md w-full md:w-1/3 hover:scale-105"
+            class="bg-gradient-to-r from-green-50 to-green-100 dark:bg-gradient-to-r dark:from-green-800 dark:to-green-900 p-4 rounded-lg shadow-md w-full md:w-1/3 transition transform duration-300 ease-in-out hover:scale-105"
           >
-            <!-- Display the title of the task -->
-            <h5 class="font-bold text-lg mb-2">{{ task.title }}</h5>
-            <!-- Display the description title of the task -->
-            <h6 class="text-sm text-gray-600">{{ task.description.title }}</h6>
-            <!-- Display the time to be completed of the task -->
-            <h6 class="text-sm text-gray-600">
-              {{ task.description.timeToBeCompleted }}
-            </h6>
-            <!-- Loop through the extraInfoRequired array and render each item in a list item -->
-            <ul class="mt-2 list-disc pl-5">
-              <li
-                v-for="(extraInfo, index) in task.description.extraInfoRequired"
-                :key="index"
-                class="text-sm text-gray-700"
-              >
-                {{ extraInfo }}
-              </li>
-            </ul>
+            <h5 class="font-bold text-lg mb-2">✅ {{ task.title }}</h5>
           </li>
         </ul>
       </div>
@@ -45,49 +20,39 @@ By building this component, we will achieve a user interface that shows a list o
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    completedTasks: Array,
-  },
-};
-</script>
-
-<style scoped>
-/* Add any necessary styles here */
-</style>
-
 <script setup>
-// ------------------------------------------------------------------------
-// Import Block
-// ------------------------------------------------------------------------
+import { ref, onMounted } from "vue";
+import { supabase } from "../supabase";
 
-// Import computed from Vue to create a computed property
-import { computed } from "vue";
-// Import the useTaskStore function from taskStore to interact with the task store
-import { useTaskStore } from "../stores/taskStore";
+const completedTasks = ref([]);
 
-// ------------------------------------------------------------------------
-// Store Access Block
-// ------------------------------------------------------------------------
+const fetchCompletedTasks = async () => {
+  try {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError || !userData) {
+      console.error("User is not logged in.");
+      return;
+    }
 
-// Use the task store by saving it in a variable
-const taskstore = useTaskStore();
+    const user = userData.user;
 
-// Destructure all the possible pieces of data that we want out of this
-const { tasks } = taskstore; // Destructure necessary functions and state from the task store
+    const { data: tasksData, error } = await supabase
+      .from("tasks")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("is_completed", true);
 
-// ------------------------------------------------------------------------
-// Computed Properties Block
-// ------------------------------------------------------------------------
+    if (error) {
+      console.error("Error fetching completed tasks:", error.message);
+      return;
+    }
 
-// Computed property to filter completed tasks
-let completedTasks = computed(() => tasks.filter((task) => task.isCompleted));
+    console.log("Fetched Completed Tasks:", tasksData); // Log fetched tasks for debugging
+    completedTasks.value = tasksData || [];
+  } catch (error) {
+    console.error("Error fetching completed tasks:", error.message);
+  }
+};
 
-/*
-  The completedTasks computed property filters the tasks array to include only the tasks that are marked as completed.
-  - It uses the filter method to iterate over the tasks array.
-  - For each task, it checks if the isCompleted property is true.
-  - The resulting array contains only the tasks that are completed.
-  */
+onMounted(fetchCompletedTasks);
 </script>

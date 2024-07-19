@@ -13,6 +13,8 @@
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
+    "@supabase/supabase-js": "^2.44.4",
+    "axios": "^1.7.2",
     "css": "^3.0.0",
     "pinia": "^2.1.7",
     "tailwind": "^4.0.0",

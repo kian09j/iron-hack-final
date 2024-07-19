@@ -1,8 +1,6 @@
 <template>
-  <div
-    class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900"
-  >
-    <div class="min-h-screen container mx-auto p-4w-full">
+  <div class="w-full bg-white dark:bg-slate-900">
+    <div class="min-h-screen container mx-auto p-4 w-full">
       <h4 class="text-2xl font-bold mb-4 flex items-center dark:text-white">
         Your tasks:
       </h4>
@@ -25,28 +23,35 @@
         <div
           v-for="task in sortedTasks"
           :key="task.id"
-          class="bg-gradient-to-r from-yellow-50 to-yellow-100 p-6 rounded-lg shadow-lg w-full md:w-1/3 transition transform duration-300 ease-in-out hover:scale-105"
+          class="bg-gradient-to-r from-yellow-50 to-yellow-100 dark:bg-gradient-to-r dark:from-slate-700 dark:to-gray-800 p-6 rounded-lg shadow-lg w-full md:w-1/3 transition transform duration-300 ease-in-out hover:scale-105"
         >
           <h5 class="font-bold text-lg mb-2">{{ task.title }}</h5>
-          <h6 class="text-sm text-gray-600">{{ task.description.title }}</h6>
-          <h6 class="text-sm text-gray-600">
+          <h6 class="text-sm text-gray-800 dark:text-white">
+            {{ task.description_title || "No title available" }}
+          </h6>
+          <h6 class="text-sm text-gray-800 dark:text-white">
             <font-awesome-icon :icon="['fas', 'hourglass-half']" />
-            {{ task.description.timeToBeCompleted }}
+            {{
+              task.description_time_to_be_completed ||
+              "No completion time available"
+            }}
           </h6>
 
           <ul class="mt-2 list-disc pl-5">
             <li
-              v-for="(extraInfo, index) in task.description.extraInfoRequired"
+              v-for="(
+                extraInfo, index
+              ) in task.description_extra_info_required || []"
               :key="index"
-              class="text-sm text-gray-700"
+              class="text-sm text-gray-800 dark:text-white"
             >
-              {{ extraInfo }}
+              {{ extraInfo || "No extra information available" }}
             </li>
           </ul>
 
           <h6 class="mt-2">
             <div>
-              <span v-if="task.isCompleted">
+              <span v-if="task.is_completed">
                 <i class="fas fa-check-circle"></i> Completed
               </span>
               <span v-else>
@@ -54,13 +59,17 @@
               </span>
             </div>
           </h6>
-          <h6>Due date: {{ task.dueDate }}</h6>
-          <p>Priority: {{ task.priority }}</p>
+          <h6>Due date: {{ task.due_date || "No due date available" }}</h6>
+          <p>Priority: {{ task.priority || "No priority available" }}</p>
 
           <ul class="mt-2">
-            <li v-for="subtask in task.subtasks" :key="subtask.id" class="mt-1">
+            <li
+              v-for="subtask in task.subtasks || []"
+              :key="subtask.id"
+              class="mt-1"
+            >
               <p>
-                {{ subtask.title }} -
+                {{ subtask.title || "No title available" }} -
                 {{ subtask.isCompleted ? "Completed" : "Incomplete" }}
               </p>
               <button
@@ -75,15 +84,15 @@
 
           <div class="flex mt-4 space-x-2">
             <button
-              :disabled="task.isCompleted"
-              @click="markTaskCompleted(task.id)"
-              class="flex-1 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded disabled:opacity-50"
+              :disabled="task.is_completed"
+              @click="handleMarkTaskCompleted(task.id)"
+              class="flex-1 bg-gradient-to-r from-green-400 to-green-500 hover:from-green-600 hover:to-green-700 dark:bg-gradient-to-r dark:from-green-700 dark:to-green-800 dark:hover:bg-gradient-to-r dark:hover:from-green-900 dark:hover:to-green-950 text-white px-4 py-2 rounded disabled:opacity-50"
             >
               Mark as Completed
             </button>
             <button
-              @click="deleteTask(task.id)"
-              class="flex-1 text-white px-4 py-2 rounded bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700"
+              @click="handleDeleteTask(task.id)"
+              class="flex-1 text-white px-4 py-2 rounded bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 dark:bg-gradient-to-r dark:from-red-700 dark:to-red-800 dark:hover:bg-gradient-to-r dark:hover:from-red-900 dark:hover:to-red-950"
             >
               Delete Task
             </button>
@@ -92,7 +101,7 @@
               class="flex-1"
             >
               <button
-                class="flex-1 text-white px-4 py-2 rounded bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600"
+                class="flex-1 text-white px-4 py-2 rounded bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 dark:bg-gradient-to-r dark:from-yellow-700 dark:to-yellow-800 dark:hover:bg-gradient-to-r dark:hover:from-yellow-900 dark:hover:to-yellow-950"
               >
                 Edit
               </button>
@@ -105,39 +114,57 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useTaskStore } from "../stores/taskStore";
+import { supabase } from "../supabase";
 
 const taskStore = useTaskStore();
-const { tasks, deleteTask, markTaskCompleted, updateTask } = taskStore;
-
+const tasks = ref([]);
 const sortOption = ref("dueDate");
 
+const fetchTasks = async () => {
+  await taskStore.fetchTasks();
+  tasks.value = taskStore.tasks;
+};
+
 const sortedTasks = computed(() => {
-  return [...tasks].sort((a, b) => {
+  return [...tasks.value].sort((a, b) => {
     if (sortOption.value === "dueDate") {
-      return new Date(a.dueDate) - new Date(b.dueDate);
+      return new Date(a.due_date) - new Date(b.due_date);
     } else if (sortOption.value === "priority") {
       const priorityOrder = { low: 1, medium: 2, high: 3 };
       return priorityOrder[a.priority] - priorityOrder[b.priority];
     } else if (sortOption.value === "completionStatus") {
-      return a.isCompleted - b.isCompleted;
+      return a.is_completed - b.is_completed;
     }
+    return 0;
   });
 });
+
+onMounted(fetchTasks);
 
 function sortTasks() {
   sortedTasks.value;
 }
 
 function markSubtaskCompleted(taskId, subtaskId) {
-  const task = tasks.find((task) => task.id === taskId);
+  const task = tasks.value.find((task) => task.id === taskId);
   if (task) {
     const subtask = task.subtasks.find((subtask) => subtask.id === subtaskId);
     if (subtask) {
       subtask.isCompleted = true;
-      updateTask(task);
+      taskStore.updateTask(task);
     }
   }
+}
+
+async function handleMarkTaskCompleted(taskId) {
+  await taskStore.markTaskCompleted(taskId);
+  fetchTasks();
+}
+
+async function handleDeleteTask(taskId) {
+  await taskStore.deleteTask(taskId);
+  fetchTasks();
 }
 </script>

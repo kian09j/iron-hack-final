@@ -6,6 +6,7 @@ import CompletedTasksPage from "../pages/CompletedTasksPage.vue";
 import AddTaskPage from "../pages/AddTaskPage.vue";
 import AuthPage from "../pages/AuthPage.vue";
 import TaskEditor from "../pages/TaskEditor.vue";
+import UserProfile from "../components/Profile.vue"; 
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import SignIn from "../components/SignIn.vue";
@@ -45,20 +46,25 @@ const routes = [
   },
   {
     path: "/auth",
-    name: "Parent structure for nested routes, only using a RouterView",
+    name: "auth",
     component: AuthPage,
     children: [
       {
         path: "login",
-        name: "Login Nested Route",
+        name: "login",
         component: SignIn,
       },
       {
         path: "register",
-        name: "Register Nested Route",
+        name: "register",
         component: SignUp,
       },
     ],
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    component: UserProfile,
   },
 ];
 

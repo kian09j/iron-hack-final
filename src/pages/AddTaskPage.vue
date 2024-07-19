@@ -1,12 +1,9 @@
 <template>
-  <div
-    class="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-sky-800 dark:to-gray-900 w-full"
-  >
+  <div class="bg-white dark:from-sky-800 dark:bg-slate-900 w-full">
     <div class="w-full container mx-auto p-4">
       <div class="container min-h-screen mx-auto p-4 w-full">
         <h1 class="text-2xl font-bold mb-4 dark:text-white">Add New Task</h1>
 
-        <!-- v-if directive to show success message if taskAdded is true, otherwise show the form -->
         <div v-if="taskAdded" class="bg-green-100 p-4 rounded-lg shadow-md">
           <p class="text-green-700 dark:text-white">Yay! New task created.</p>
           <button
@@ -19,7 +16,7 @@
 
         <div
           v-else
-          class="bg-gradient-to-r from-neutral-50 to-neutral-100 p-6 rounded-lg shadow-md"
+          class="bg-gradient-to-r from-neutral-50 to-neutral-100 dark:bg-gradient-to-r dark:from-slate-700 dark:to-gray-800 p-6 rounded-lg shadow-md"
         >
           <form @submit.prevent="handleSubmit">
             <div class="mb-4">
@@ -50,7 +47,7 @@
               <label for="dueDate" class="block text-gray-700">Due Date:</label>
               <input
                 type="date"
-                v-model="dueDate"
+                v-model="newTask.dueDate"
                 id="dueDate"
                 class="w-full p-2 border rounded mt-1"
                 required
@@ -62,7 +59,7 @@
                 >Priority:</label
               >
               <select
-                v-model="priority"
+                v-model="newTask.priority"
                 id="priority"
                 class="w-full p-2 border rounded mt-1"
                 required
@@ -100,7 +97,7 @@
                 <button
                   type="button"
                   @click="addExtraInfo"
-                  class="text-white px-4 py-2 rounded bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700"
+                  class="text-white px-4 py-2 rounded bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700 dark:from-blue-800 dark:to-blue-900 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-900 dark:hover:to-blue-950 transition duration-300"
                 >
                   Add Info
                 </button>
@@ -130,12 +127,13 @@
               <input
                 v-model="subtaskTitle"
                 @keyup.enter="addSubtask"
+                id="subtasks"
                 placeholder="Add subtask and press Enter"
                 class="w-full p-2 border rounded mt-1"
               />
               <ul class="mt-2 list-disc pl-5">
                 <li
-                  v-for="subtask in subtasks"
+                  v-for="subtask in newTask.subtasks"
                   :key="subtask.id"
                   class="text-sm text-gray-700"
                 >
@@ -146,7 +144,7 @@
 
             <button
               type="submit"
-              class="text-white px-4 py-2 rounded bg-gradient-to-r from-green-400 to-green-500 hover:from-green-600 hover:to-green-700"
+              class="text-white px-4 py-2 rounded bg-gradient-to-r from-green-400 to-green-500 dark:from-green-800 dark:to-green-900 hover:from-green-600 hover:to-green-700 dark:hover:from-green-900 dark:hover:to-green-950 transition duration-300"
             >
               Add Task
             </button>
@@ -158,125 +156,140 @@
 </template>
 
 <script setup>
-// ------------------------------------------------------------------------
-// Import Block
-// ------------------------------------------------------------------------
-
-// Importing reactive and ref from Vue for reactivity and references
 import { reactive, ref } from "vue";
-// Importing the useTaskStore function from taskStore to interact with the task store
-import { useTaskStore } from "../stores/taskStore";
+import { useUserStore } from "../stores/user";
+import { supabase } from "../supabase";
 
-// ------------------------------------------------------------------------
-// Store Access Block
-// ------------------------------------------------------------------------
-
-// Use the task store
-const taskStore = useTaskStore();
-const { addTask } = taskStore; // Destructure addTask function from the task store
-
-// ------------------------------------------------------------------------
-// Reactive Variables Block
-// ------------------------------------------------------------------------
+// Use the user store to get the authenticated user
+const userStore = useUserStore();
 
 // Reactive object for the new task
 const newTask = reactive({
-  id: Date.now(), // Set initial ID to current timestamp
-  title: "", // Title of the new task
+  title: "",
   description: {
-    title: "", // Detailed description of the new task
-    timeToBeCompleted: "", // Time required to complete the new task
-    extraInfoRequired: [], // Array for additional information required for the task
+    title: "",
+    timeToBeCompleted: "",
+    extraInfoRequired: [],
   },
-  isCompleted: false, // Initial completion status of the new task
+  dueDate: "",
+  priority: "low",
+  subtasks: [],
+  isCompleted: false,
 });
 
-const newExtraInfo = ref(""); // Reference for new extra info input
-const taskAdded = ref(false); // Reference for tracking if a task has been added
+// Refs for extra information and subtasks
+const newExtraInfo = ref("");
+const subtaskTitle = ref("");
+const taskAdded = ref(false);
 
-// ------------------------------------------------------------------------
-// Methods Block
-// ------------------------------------------------------------------------
+// Function to handle the submission of the new task
+const handleSubmit = async () => {
+  const user = userStore.user;
+  if (!user) {
+    console.error("User is not authenticated");
+    return;
+  }
 
-// Function to handle form submission
-const handleSubmit = () => {
-  const taskToAdd = JSON.parse(JSON.stringify(newTask)); // Create a deep copy of the new task to avoid reactivity issues
-  taskToAdd.id = Date.now(); // Update ID to ensure uniqueness
-  addTask(taskToAdd); // Add the new task to the store
-  taskAdded.value = true; // Set taskAdded to true to show the success message
-};
+  // Construct the task data to match the database structure
+  const taskToAdd = {
+    user_id: user.id,
+    title: newTask.title,
+    description_title: newTask.description.title,
+    description_time_to_be_completed: newTask.description.timeToBeCompleted,
+    description_extra_info_required: JSON.stringify(
+      newTask.description.extraInfoRequired
+    ), // Convert array to JSON string
+    due_date: newTask.dueDate,
+    priority: newTask.priority,
+    subtasks: JSON.stringify(newTask.subtasks),
+    is_completed: newTask.isCompleted,
+  };
 
-/*
-  The handleSubmit function handles the form submission process.
-  - It creates a deep copy of the newTask object to avoid any reactivity issues.
-  - It updates the id of the taskToAdd to ensure it is unique by setting it to the current timestamp.
-  - It calls the addTask function from the task store to add the new task to the global state.
-  - It sets taskAdded to true to indicate that a task has been successfully added.
-  */
+  try {
+    // Insert the task into the Supabase database
+    const { data, error } = await supabase.from("tasks").insert([taskToAdd]);
 
-// Function to add extra info
-const addExtraInfo = () => {
-  if (newExtraInfo.value.trim()) {
-    // Check if the newExtraInfo value is not empty after trimming
-    newTask.description.extraInfoRequired.push(newExtraInfo.value.trim()); // Add the trimmed value to the extraInfoRequired array
-    newExtraInfo.value = ""; // Clear the input field
+    // Log both data and error for debugging
+    console.log("Supabase insert response:", { data, error });
+
+    if (error) {
+      throw error;
+    }
+
+    // Log the success and reset the form
+    console.log("Task created successfully:", data);
+    taskAdded.value = true;
+    resetForm();
+  } catch (error) {
+    console.error("Error creating task:", error.message);
   }
 };
 
-function addSubtask() {
+// Function to add extra information to the task
+const addExtraInfo = () => {
+  if (newExtraInfo.value.trim()) {
+    newTask.description.extraInfoRequired.push(newExtraInfo.value.trim());
+    newExtraInfo.value = "";
+  }
+};
+
+// Function to add a subtask to the task
+const addSubtask = () => {
   if (subtaskTitle.value.trim() !== "") {
-    subtasks.value.push({
+    newTask.subtasks.push({
       id: Date.now(),
       title: subtaskTitle.value.trim(),
       isCompleted: false,
     });
     subtaskTitle.value = "";
   }
+};
+
+// Function to remove extra information from the task
+const removeExtraInfo = (index) => {
+  newTask.description.extraInfoRequired.splice(index, 1);
+};
+
+// Function to reset the form fields
+const resetForm = () => {
+  newTask.title = "";
+  newTask.description.title = "";
+  newTask.description.timeToBeCompleted = "";
+  newTask.description.extraInfoRequired = [];
+  newTask.dueDate = "";
+  newTask.priority = "low";
+  newTask.subtasks = [];
+  newTask.isCompleted = false;
+  taskAdded.value = false;
+};
+
+// Function to start a new task, resetting the form
+const startNewTask = () => {
+  resetForm();
+  taskAdded.value = false;
+};
+</script>
+<style scoped>
+input {
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
 }
 
-/*
-  The addExtraInfo function adds an extra information item to the new task's description.
-  - It checks if the newExtraInfo input value is not empty after trimming whitespace.
-  - If valid, it pushes the trimmed value to the extraInfoRequired array of the new task's description.
-  - It then clears the newExtraInfo input field.
-  */
+/* Dark mode styles */
+.dark input {
+  background-color: gray; /* Dark background */
+  color: white; /* White text */
+  border: 1px solid #555; /* Slightly lighter border */
+}
 
-// Function to remove extra info
-const removeExtraInfo = (index) => {
-  newTask.description.extraInfoRequired.splice(index, 1); // Remove the item at the specified index from the extraInfoRequired array
-};
+/* Ensure labels and other text is readable in dark mode */
+.dark label {
+  color: white;
+}
 
-/*
-  The removeExtraInfo function removes an extra information item from the new task's description.
-  - It takes an index as a parameter.
-  - It removes the item at the specified index from the extraInfoRequired array using the splice method.
-  */
-
-// Function to reset the form
-const resetForm = () => {
-  newTask.title = ""; // Clear the title field
-  newTask.description.title = ""; // Clear the description title field
-  newTask.description.timeToBeCompleted = ""; // Clear the time to be completed field
-  newTask.description.extraInfoRequired = []; // Clear the extra info required array
-};
-
-/*
-  The resetForm function resets all the fields of the new task form to their initial states.
-  - It clears the title field by setting newTask.title to an empty string.
-  - It clears the description title field by setting newTask.description.title to an empty string.
-  - It clears the time to be completed field by setting newTask.description.timeToBeCompleted to an empty string.
-  - It clears the extra info required array by setting newTask.description.extraInfoRequired to an empty array.
-  */
-
-// Function to start a new task submission
-const startNewTask = () => {
-  resetForm(); // Reset the form fields
-  taskAdded.value = false; // Set taskAdded to false to show the form again
-};
-
-/*
-  The startNewTask function resets the form and prepares it for a new task submission.
-  - It calls the resetForm function to clear all form fields.
-  - It sets taskAdded to false to hide the success message and display the form again.
-  */
-</script>
+/* Additional styles for the form if needed */
+.dark .text-lg {
+  color: white;
+}
+</style>

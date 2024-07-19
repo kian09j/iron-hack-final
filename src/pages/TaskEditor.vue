@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="w-full bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-900"
-  >
+  <div class="w-full bg-white dark:bg-slate-900">
     <div
       class="container mx-auto p-4 bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-gray-800 dark:to-gray-900"
     >
@@ -14,6 +12,7 @@
             v-model="task.title"
             type="text"
             class="p-2 border rounded"
+            required
           />
         </div>
         <div class="flex flex-col">
@@ -74,7 +73,7 @@
           <input
             id="dueDate"
             type="date"
-            v-model="task.dueDate"
+            v-model="task.due_date"
             required
             class="p-2 border rounded"
           />
@@ -95,20 +94,11 @@
         <div class="flex items-center space-x-2">
           <input
             id="isCompleted"
-            v-model="task.isCompleted"
+            v-model="task.is_completed"
             type="checkbox"
             class="form-checkbox"
           />
           <label for="isCompleted" class="font-semibold">Is Completed</label>
-        </div>
-        <div class="flex items-center space-x-2">
-          <input
-            id="isFav"
-            v-model="task.isFav"
-            type="checkbox"
-            class="form-checkbox"
-          />
-          <label for="isFav" class="font-semibold">Is Favorite</label>
         </div>
         <button
           type="submit"
@@ -121,46 +111,76 @@
   </div>
 </template>
 
-<script>
-import { ref } from "vue";
+<script setup>
+import { ref, onMounted } from "vue";
 import { useTaskStore } from "../stores/taskStore";
 import { useRouter, useRoute } from "vue-router";
 
-export default {
-  setup() {
-    const taskStore = useTaskStore();
-    const route = useRoute();
-    const router = useRouter();
+const taskStore = useTaskStore();
+const route = useRoute();
+const router = useRouter();
 
-    const taskId = route.params.taskId;
-    const task = ref({
-      ...taskStore.tasks.find((task) => task.id === parseInt(taskId)),
-    });
-
-    const extraInfo = ref("");
-
-    const addExtraInfo = () => {
-      if (extraInfo.value) {
-        task.value.description.extraInfoRequired.push(extraInfo.value);
-        extraInfo.value = "";
-      }
-    };
-
-    const saveTask = () => {
-      console.log("Saving task:", task.value);
-      taskStore.updateTask(task.value);
-      console.log("Task saved successfully.");
-      router.push({ name: "all tasks page" });
-    };
-
-    return {
-      task,
-      extraInfo,
-      addExtraInfo,
-      saveTask,
-    };
+const taskId = parseInt(route.params.taskId);
+const task = ref({
+  title: "",
+  description: {
+    title: "",
+    timeToBeCompleted: "",
+    extraInfoRequired: [],
   },
+  due_date: "",
+  priority: "low",
+  is_completed: false,
+});
+
+const extraInfo = ref("");
+
+const fetchTask = async () => {
+  try {
+    const fetchedTask = taskStore.tasks.find((t) => t.id === taskId);
+    if (fetchedTask) {
+      task.value = {
+        ...fetchedTask,
+        description: {
+          ...fetchedTask.description,
+          extraInfoRequired: JSON.parse(
+            fetchedTask.description.extraInfoRequired || "[]"
+          ),
+        },
+      };
+    }
+  } catch (error) {
+    console.error("Error fetching task:", error.message);
+  }
 };
+
+const addExtraInfo = () => {
+  if (extraInfo.value.trim()) {
+    task.value.description.extraInfoRequired.push(extraInfo.value.trim());
+    extraInfo.value = "";
+  }
+};
+
+const saveTask = async () => {
+  try {
+    taskStore.updateTask({
+      ...task.value,
+      description: {
+        ...task.value.description,
+        extraInfoRequired: JSON.stringify(
+          task.value.description.extraInfoRequired
+        ),
+      },
+    });
+    console.log("Task saved successfully.");
+    router.push({ name: "AllTasks" });
+  } catch (error) {
+    console.error("Error saving task:", error.message);
+  }
+};
+
+// Fetch the task when the component is mounted
+onMounted(fetchTask);
 </script>
 
 <style scoped>
