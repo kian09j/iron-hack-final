@@ -47,7 +47,7 @@ const fetchCompletedTasks = async () => {
       return;
     }
 
-    console.log("Fetched Completed Tasks:", tasksData); // Log fetched tasks for debugging
+    console.log("Fetched Completed Tasks:", tasksData);
     completedTasks.value = tasksData || [];
   } catch (error) {
     console.error("Error fetching completed tasks:", error.message);

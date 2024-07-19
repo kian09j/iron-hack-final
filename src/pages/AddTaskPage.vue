@@ -4,6 +4,7 @@
       <div class="container min-h-screen mx-auto p-4 w-full">
         <h1 class="text-2xl font-bold mb-4 dark:text-white">Add New Task</h1>
 
+        <!-- Success Notification -->
         <div v-if="taskAdded" class="bg-green-100 p-4 rounded-lg shadow-md">
           <p class="text-green-700 dark:text-white">Yay! New task created.</p>
           <button
@@ -14,11 +15,13 @@
           </button>
         </div>
 
+        <!-- Task Form -->
         <div
           v-else
           class="bg-gradient-to-r from-neutral-50 to-neutral-100 dark:bg-gradient-to-r dark:from-slate-700 dark:to-gray-800 p-6 rounded-lg shadow-md"
         >
           <form @submit.prevent="handleSubmit">
+            <!-- Title -->
             <div class="mb-4">
               <label for="title" class="block text-gray-700">Title:</label>
               <input
@@ -30,6 +33,7 @@
               />
             </div>
 
+            <!-- Description Title -->
             <div class="mb-4">
               <label for="descriptionTitle" class="block text-gray-700"
                 >Description Title:</label
@@ -43,6 +47,7 @@
               />
             </div>
 
+            <!-- Due Date -->
             <div class="mb-4">
               <label for="dueDate" class="block text-gray-700">Due Date:</label>
               <input
@@ -54,6 +59,7 @@
               />
             </div>
 
+            <!-- Priority -->
             <div class="mb-4">
               <label for="priority" class="block text-gray-700"
                 >Priority:</label
@@ -70,6 +76,7 @@
               </select>
             </div>
 
+            <!-- Time to be Completed -->
             <div class="mb-4">
               <label for="timeToBeCompleted" class="block text-gray-700"
                 >Time to be Completed:</label
@@ -83,6 +90,7 @@
               />
             </div>
 
+            <!-- Extra Info -->
             <div class="mb-4">
               <label for="extraInfo" class="block text-gray-700"
                 >Extra Info Required:</label
@@ -120,6 +128,7 @@
               </ul>
             </div>
 
+            <!-- Subtasks -->
             <div class="mb-4">
               <label for="subtasks" class="block text-gray-700"
                 >Subtasks:</label
@@ -160,10 +169,8 @@ import { reactive, ref } from "vue";
 import { useUserStore } from "../stores/user";
 import { supabase } from "../supabase";
 
-// Use the user store to get the authenticated user
 const userStore = useUserStore();
 
-// Reactive object for the new task
 const newTask = reactive({
   title: "",
   description: {
@@ -177,12 +184,10 @@ const newTask = reactive({
   isCompleted: false,
 });
 
-// Refs for extra information and subtasks
 const newExtraInfo = ref("");
 const subtaskTitle = ref("");
 const taskAdded = ref(false);
 
-// Function to handle the submission of the new task
 const handleSubmit = async () => {
   const user = userStore.user;
   if (!user) {
@@ -190,7 +195,6 @@ const handleSubmit = async () => {
     return;
   }
 
-  // Construct the task data to match the database structure
   const taskToAdd = {
     user_id: user.id,
     title: newTask.title,
@@ -198,7 +202,7 @@ const handleSubmit = async () => {
     description_time_to_be_completed: newTask.description.timeToBeCompleted,
     description_extra_info_required: JSON.stringify(
       newTask.description.extraInfoRequired
-    ), // Convert array to JSON string
+    ),
     due_date: newTask.dueDate,
     priority: newTask.priority,
     subtasks: JSON.stringify(newTask.subtasks),
@@ -206,17 +210,15 @@ const handleSubmit = async () => {
   };
 
   try {
-    // Insert the task into the Supabase database
     const { data, error } = await supabase.from("tasks").insert([taskToAdd]);
 
-    // Log both data and error for debugging
     console.log("Supabase insert response:", { data, error });
 
     if (error) {
       throw error;
     }
 
-    // Log the success and reset the form
+    // Success response
     console.log("Task created successfully:", data);
     taskAdded.value = true;
     resetForm();
@@ -269,6 +271,7 @@ const startNewTask = () => {
   taskAdded.value = false;
 };
 </script>
+
 <style scoped>
 input {
   background-color: white;
@@ -278,17 +281,15 @@ input {
 
 /* Dark mode styles */
 .dark input {
-  background-color: gray; /* Dark background */
-  color: white; /* White text */
-  border: 1px solid #555; /* Slightly lighter border */
+  background-color: gray;
+  color: white;
+  border: 1px solid #555;
 }
 
-/* Ensure labels and other text is readable in dark mode */
 .dark label {
   color: white;
 }
 
-/* Additional styles for the form if needed */
 .dark .text-lg {
   color: white;
 }
