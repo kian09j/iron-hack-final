@@ -1,8 +1,8 @@
 <template>
   <div>
-    <!-- Conditionally render navbar based on route -->
     <header v-if="!isAuthPage">
       <nav class="bg-white dark:bg-slate-900 relative">
+        <!-- Header Section -->
         <div
           class="flex flex-col md:flex-row items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
         >
@@ -16,6 +16,7 @@
             class="flex flex-col md:flex-row items-center space-x-4 md:space-x-0 md:space-y-0 space-y-2 md:space-y-0"
           >
             <DarkModeToggle />
+            <!-- Hamburger Menu Button -->
             <button
               @click="toggleMenu"
               class="md:hidden text-3xl text-gray-700 dark:text-white"
@@ -91,7 +92,7 @@
         <!-- Desktop Menu -->
         <div
           v-if="isUserLoggedIn"
-          class="flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
+          class="hidden md:flex justify-between items-center p-5 text-3xl font-bold border-b border-gray-500 dark:border-gray-400"
         >
           <RouterLink
             to="/"
@@ -147,9 +148,8 @@ const router = useRouter();
 const userStore = useUserStore();
 const { user, isLoggedIn } = storeToRefs(userStore);
 const isUserLoggedIn = ref(false);
-const isMenuOpen = ref(false); // State to manage the mobile menu
+const isMenuOpen = ref(false);
 
-// Toggle the mobile menu visibility
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
@@ -205,18 +205,18 @@ body {
   transition: all 0.3s ease-out;
   transform: translateX(-50%);
 }
+
 .dark .nav-item::after {
   background-color: #fff;
 }
+
 .nav-item:hover::after {
   width: 100%;
 }
-@media (max-width: 768px) {
-  button {
-    display: block;
-  }
 
-  .md\\:hidden {
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .md\:hidden {
     display: block;
   }
 
@@ -225,8 +225,9 @@ body {
   }
 }
 
+/* Desktop Styles */
 @media (min-width: 769px) {
-  .md\\:hidden {
+  .md\:hidden {
     display: none;
   }
 
