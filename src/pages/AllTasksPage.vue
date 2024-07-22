@@ -82,7 +82,7 @@
             </li>
           </ul>
 
-          <div class="flex mt-4 space-x-2">
+          <div class="flex mt-4 mx-auto space-x-2">
             <button
               :disabled="task.is_completed"
               @click="handleMarkTaskCompleted(task.id)"
@@ -101,7 +101,8 @@
               class="flex-1"
             >
               <button
-                class="flex-1 text-white px-4 py-2 rounded bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 dark:bg-gradient-to-r dark:from-yellow-700 dark:to-yellow-800 dark:hover:bg-gradient-to-r dark:hover:from-yellow-900 dark:hover:to-yellow-950"
+                class="flex-1 px-4 py-2 text-white rounded bg-gradient-to-r from-yellow-400 to-yellow-500 hover:from-yellow-500 hover:to-yellow-600 dark:bg-gradient-to-r dark:from-yellow-700 dark:to-yellow-800 dark:hover:bg-gradient-to-r dark:hover:from-yellow-900 dark:hover:to-yellow-950"
+                style="height: 100%"
               >
                 Edit
               </button>

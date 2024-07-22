@@ -100,7 +100,7 @@
                   v-model="newExtraInfo"
                   type="text"
                   id="extraInfo"
-                  class="flex-grow p-2 border rounded mt-1"
+                  class="flex-grow p-2 border rounded mt-1 m-2"
                 />
                 <button
                   type="button"
@@ -133,18 +133,25 @@
               <label for="subtasks" class="block text-gray-700"
                 >Subtasks:</label
               >
-              <input
-                v-model="subtaskTitle"
-                @keyup.enter="addSubtask"
-                id="subtasks"
-                placeholder="Add subtask and press Enter"
-                class="w-full p-2 border rounded mt-1"
-              />
+              <div class="flex items-center m-2">
+                <input
+                  v-model="subtaskTitle"
+                  id="subtasks"
+                  class="flex-grow p-2 border rounded mt-1 m-2"
+                />
+                <button
+                  type="button"
+                  @click="addSubtask"
+                  class="text-white px-4 py-2 rounded bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-600 hover:to-blue-700 dark:from-blue-800 dark:to-blue-900 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-900 dark:hover:to-blue-950 transition duration-300"
+                >
+                  Add Subtask
+                </button>
+              </div>
               <ul class="mt-2 list-disc pl-5">
                 <li
                   v-for="subtask in newTask.subtasks"
                   :key="subtask.id"
-                  class="text-sm text-gray-700"
+                  class="text-sm text-gray-700 flex justify-between items-center"
                 >
                   {{ subtask.title }}
                 </li>
@@ -210,18 +217,16 @@ const handleSubmit = async () => {
   };
 
   try {
-    const { data, error } = await supabase.from("tasks").insert([taskToAdd]);
+    const { error } = await supabase.from("tasks").insert([taskToAdd]);
 
-    console.log("Supabase insert response:", { data, error });
+    console.log("Supabase insert response:", { error });
 
     if (error) {
       throw error;
     }
 
     // Success response
-    console.log("Task created successfully:", data);
     taskAdded.value = true;
-    resetForm();
   } catch (error) {
     console.error("Error creating task:", error.message);
   }
@@ -236,7 +241,8 @@ const addExtraInfo = () => {
 };
 
 // Function to add a subtask to the task
-const addSubtask = () => {
+const addSubtask = (e) => {
+  e.preventDefault();
   if (subtaskTitle.value.trim() !== "") {
     newTask.subtasks.push({
       id: Date.now(),
@@ -268,7 +274,6 @@ const resetForm = () => {
 // Function to start a new task, resetting the form
 const startNewTask = () => {
   resetForm();
-  taskAdded.value = false;
 };
 </script>
 
